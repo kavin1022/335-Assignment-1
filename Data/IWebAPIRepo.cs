@@ -7,7 +7,7 @@ using A1.Models;
 namespace A1.Data {
     public interface IWebAPIRepo
     {
-        IEnumerable<Staff> GetAllStaff();
+        IEnumerable<Staff> GetAllStaffs();
         Staff GetStaffByID(int id);
         Staff AddStaff(Staff staff);
         void DeleteStaff(int id);

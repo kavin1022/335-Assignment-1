@@ -19,9 +19,9 @@ namespace A1.Data
         public Staff AddStaff(Staff staff)
         {
             EntityEntry<Staff> e = _dbContext.Staff.Add(staff);
-            Staff c = e.Entity;
+            Staff s = e.Entity;
             _dbContext.SaveChanges();
-            return c;
+            return s;
         }
 
         public void DeleteStaff(int id)

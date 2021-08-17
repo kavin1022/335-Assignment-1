@@ -14,7 +14,7 @@ using System.Threading.Tasks;
 using A1.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace _335_Assignment_1
+namespace A1
 {
     public class Startup
     {
@@ -30,9 +30,10 @@ namespace _335_Assignment_1
         {
             services.AddDbContext<WebAPIDBContext>(options => options.UseSqlite(Configuration.GetConnectionString("WebAPIConnection")));
             services.AddControllers();
+            services.AddScoped<IWebAPIRepo, DBWebAPIRepo>();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "_335_Assignment_1", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = "A1", Version = "v1" });
             });
 
         }
