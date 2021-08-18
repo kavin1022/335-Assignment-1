@@ -1,11 +1,15 @@
+
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Mvc;
-using A1.Models;
 using A1.Data;
 using A1.Dtos;
+using A1.Models;
+using Microsoft.AspNetCore.Mvc;
+
 
 namespace A1.Controllers
 {
@@ -20,14 +24,6 @@ namespace A1.Controllers
             _repository = repository;
         }
 
-        // GET /webapi/GetStaffs
-        [HttpGet("GetStaffs")]
-        public ActionResult<IEnumerable<StaffOutDto>> GetStaffs()
-        {
-            IEnumerable<Staff> staffs = _repository.GetAllStaffs();
-            IEnumerable<StaffOutDto> c = staffs.Select(e => new StaffOutDto { Id = e.Id, FirstName = e.FirstName, LastName = e.LastName });
-            return Ok(c);
-        }
 
         // GET /webapi/GetStaff/{ID}
         [HttpGet("GetStaff/{ID}")]
@@ -83,5 +79,40 @@ namespace A1.Controllers
                 return NoContent();
             }
         }
+        //Endpoint 1
+        [HttpGet("GetLogo")]
+        public ActionResult GetLogo() {
+            string path = Directory.GetCurrentDirectory();
+            string imgDir = Path.Combine(path, "StaffPhotos");
+            string fileName = Path.Combine(imgDir, "logo" + ".png");
+            string respHeader = "image/png";
+
+            return PhysicalFile(fileName, respHeader);
+        }
+
+        //Endpoint 2
+        [HttpGet("GetVersion")]
+        public ActionResult GetVersion(){
+            string version = "<p>v1</p>";
+            ContentResult c = new ContentResult
+            {
+                Content = version,
+                ContentType = "text/html",
+                StatusCode = (int)HttpStatusCode.OK,
+            };
+            return c;
+        }
+
+        //Endpoint 3
+        [HttpGet("GetAllStaff")]
+        public ActionResult<IEnumerable<StaffOutDto>> GetAllStaff()
+        {
+            IEnumerable<Staff> staffs = _repository.GetAllStaffs();
+            IEnumerable<StaffOutDto> c = staffs.Select(e => new StaffOutDto { Id = e.Id, FirstName = e.FirstName, LastName = e.LastName, Title = e.Title, Email = e.Email, Tel = e.Tel, Url = e.Url, Research = e.Research });
+            return Ok(c);
+        }
+
+        //Endpoint 4
+
     }
 }
