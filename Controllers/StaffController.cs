@@ -113,6 +113,27 @@ namespace A1.Controllers
         }
 
         //Endpoint 4
+        [HttpGet("GetStaffPhoto/{id}")]
+        public ActionResult GetStaffPhoto(string id)
+        {
+            string path = Directory.GetCurrentDirectory();
+            string imgDir = Path.Combine(path, "StaffPhotos");
 
+            string staffPhoto = Path.Combine(imgDir, id + ".jpg");
+            string notFound = Path.Combine(imgDir, "default" + ".png");
+            string respHeader = "";
+            string fileName = "";
+            if (System.IO.File.Exists(staffPhoto))
+            {
+                respHeader = "image/jpg";
+                fileName = staffPhoto;
+            }
+            else {
+                respHeader = "image/png";
+                fileName = notFound;
+            }
+            return PhysicalFile(fileName, respHeader);
+
+        }
     }
 }
