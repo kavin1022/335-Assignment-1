@@ -37,6 +37,31 @@ namespace A1.Migrations
                     b.ToTable("Product");
                 });
 
+            modelBuilder.Entity("A1.Models.SiteComments", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Comment")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("IP")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Time")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Comments");
+                });
+
             modelBuilder.Entity("A1.Models.Staff", b =>
                 {
                     b.Property<int>("Id")

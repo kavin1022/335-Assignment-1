@@ -28,45 +28,6 @@ namespace A1.Controllers
             _repository = repository;
         }
 
-        /*[HttpPost("AddStaff")]
-        public ActionResult<StaffOutDto> AddStaff(StaffInputDto staff)
-        {
-            Staff c = new Staff { FirstName = staff.FirstName, LastName = staff.LastName, Email = staff.Email };
-            Staff addedStaff = _repository.AddStaff(c);
-            StaffOutDto co = new StaffOutDto { Id = addedStaff.Id, FirstName = addedStaff.FirstName, LastName = addedStaff.LastName };
-            return CreatedAtAction(nameof(GetStaff), new { id = co.Id }, co);
-        }*/
-
-        // PUT /webapi/UpdateStaff/{id}
-        [HttpPut("UpdateStaff/{id}")]
-        public ActionResult UpdateStaff(int id, StaffInputDto staff)
-        {
-            Staff c = _repository.GetStaffByID(id);
-            if (c == null)
-                return NotFound();
-            else
-            {
-                c.FirstName = staff.FirstName;
-                c.LastName = staff.LastName;
-                c.Email = staff.Email;
-                _repository.SaveChanges();
-                return NoContent();
-            }
-        }
-
-        // DELETE /webapi/DeleteStaff/{id}
-        [HttpDelete("DeleteStaff/{id}")]
-        public ActionResult DeleteStaff(int id)
-        {
-            Staff c = _repository.GetStaffByID(id);
-            if (c == null)
-                return NotFound();
-            else
-            {
-                _repository.DeleteStaff(id);
-                return NoContent();
-            }
-        }
         //Endpoint 1
         [HttpGet("GetLogo")]
         public ActionResult GetLogo() {
@@ -220,5 +181,31 @@ namespace A1.Controllers
             return PhysicalFile(fileName, respHeader);
         }
 
+        //Endpoint 8
+        [HttpPost("WriteComment")]
+        public ActionResult<CommentOutDto> WriteComment(CommentInputDto comment)
+        {
+            SiteComments c = new SiteComments { Comment = comment.Comment, Name = comment.Name, IP = Request.HttpContext.Connection.RemoteIpAddress.ToString(), Time = DateTime.Now.ToString() };
+            SiteComments addedComment = _repository.AddComment(c);
+            CommentOutDto co = new CommentOutDto { Id = addedComment.Id, Name = addedComment.Name, IP = addedComment.IP, Time =  addedComment.Time, Comment = addedComment.Comment };
+            return CreatedAtAction(nameof(GetComments), new { id = co.Id }, co);
+        }
+
+        //Endpoint 9
+        [HttpGet("GetComments")]
+        public ActionResult GetComments()
+        {
+            IEnumerable<SiteComments> comments = _repository.GetAllComments();
+            var i = 0;
+            ContentResult c = new ContentResult { Content = "", ContentType = "text/html", StatusCode = (int)HttpStatusCode.OK, };
+            foreach (SiteComments IndivComment in comments.Reverse()) {
+                string temp = "<p>" + IndivComment.Comment + " - " + IndivComment.Name + "</p>";
+                c.Content += temp;
+                i = i + 1;
+                if (i == 5) { break; };
+            }
+
+            return c;
+        }
     }
 }

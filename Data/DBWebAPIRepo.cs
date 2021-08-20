@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
+using System.Globalization;
 using A1.Models;
 
 namespace A1.Data
@@ -16,24 +17,7 @@ namespace A1.Data
             _dbContext = dbContext;
         }
 
-        public Staff AddStaff(Staff staff)
-        {
-            EntityEntry<Staff> e = _dbContext.Staff.Add(staff);
-            Staff s = e.Entity;
-            _dbContext.SaveChanges();
-            return s;
-        }
-
-        public void DeleteStaff(int id)
-        {
-            Staff Staff = _dbContext.Staff.FirstOrDefault(e => e.Id == id);
-            if (Staff != null)
-            {
-                _dbContext.Staff.Remove(Staff);
-                _dbContext.SaveChanges();
-            }
-        }
-
+        /*Staff Functions*/
         public IEnumerable<Staff> GetAllStaffs()
         {
             IEnumerable<Staff> Staffs = _dbContext.Staff.ToList<Staff>();
@@ -46,6 +30,8 @@ namespace A1.Data
             return Staff;
         }
 
+        /*Product Functions*/
+
         public IEnumerable<Product> GetAllProducts()
         {
             IEnumerable<Product> Products = _dbContext.Product.ToList<Product>();
@@ -57,6 +43,21 @@ namespace A1.Data
             IEnumerable<Product> Products = _dbContext.Product.ToList<Product>();
             IEnumerable<Product> Product = Products.Where(e => e.Name.ToLower().Contains(letter));
             return Product;
+        }
+
+        /*Comment Functions*/
+        public IEnumerable<SiteComments> GetAllComments()
+        {
+            IEnumerable<SiteComments> Comments = _dbContext.Comments.ToList<SiteComments>();
+            return Comments;
+        }
+
+        public SiteComments AddComment(SiteComments comment)
+        {
+            EntityEntry<SiteComments> e = _dbContext.Comments.Add(comment);
+            SiteComments s = e.Entity;
+            _dbContext.SaveChanges();
+            return s;
         }
 
 
