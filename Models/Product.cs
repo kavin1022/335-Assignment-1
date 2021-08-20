@@ -2,7 +2,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace A1.Models
 {
-    public class Products
+    public class Product
     {
     [Key]
     public int Id { get; set; }
@@ -10,6 +10,7 @@ namespace A1.Models
     public string Name { get; set; }
     [Required]
     public string Description { get; set; }
+    [Required]
     public float Price { get; set; }
 }
 }

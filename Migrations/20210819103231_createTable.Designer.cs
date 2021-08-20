@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace A1.Migrations
 {
     [DbContext(typeof(WebAPIDBContext))]
-    [Migration("20210817031622_createTable")]
+    [Migration("20210819103231_createTable")]
     partial class createTable
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -16,6 +16,28 @@ namespace A1.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "5.0.9");
+
+            modelBuilder.Entity("A1.Models.Product", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<float>("Price")
+                        .HasColumnType("REAL");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Product");
+                });
 
             modelBuilder.Entity("A1.Models.Staff", b =>
                 {

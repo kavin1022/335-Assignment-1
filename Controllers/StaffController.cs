@@ -8,12 +8,16 @@ using System.Threading.Tasks;
 using A1.Data;
 using A1.Dtos;
 using A1.Models;
+using A1.Helper;
 using Microsoft.AspNetCore.Mvc;
+using System.Drawing;
+using System.Drawing.Drawing2D;
+using System.Drawing.Imaging;
 
 
 namespace A1.Controllers
 {
-    [Route("webapi")]
+    [Route("api")]
     [ApiController]
     public class StaffsController : Controller
     {
@@ -24,30 +28,14 @@ namespace A1.Controllers
             _repository = repository;
         }
 
-
-        // GET /webapi/GetStaff/{ID}
-        [HttpGet("GetStaff/{ID}")]
-        public ActionResult<StaffOutDto> GetStaff(int id)
-        {
-            Staff staff = _repository.GetStaffByID(id);
-            if (staff == null)
-                return NotFound();
-            else
-            {
-                StaffOutDto c = new StaffOutDto { Id = staff.Id, FirstName = staff.FirstName, LastName = staff.LastName };
-                return Ok(c);
-            }
-
-        }
-
-        [HttpPost("AddStaff")]
+        /*[HttpPost("AddStaff")]
         public ActionResult<StaffOutDto> AddStaff(StaffInputDto staff)
         {
             Staff c = new Staff { FirstName = staff.FirstName, LastName = staff.LastName, Email = staff.Email };
             Staff addedStaff = _repository.AddStaff(c);
             StaffOutDto co = new StaffOutDto { Id = addedStaff.Id, FirstName = addedStaff.FirstName, LastName = addedStaff.LastName };
             return CreatedAtAction(nameof(GetStaff), new { id = co.Id }, co);
-        }
+        }*/
 
         // PUT /webapi/UpdateStaff/{id}
         [HttpPut("UpdateStaff/{id}")]
@@ -133,7 +121,104 @@ namespace A1.Controllers
                 fileName = notFound;
             }
             return PhysicalFile(fileName, respHeader);
+        }
+
+        //Endpoint 5
+        [HttpGet("GetCard/{id}")]
+        public ActionResult GetCard(int id)
+        {
+            Staff staff = _repository.GetStaffByID(id);
+            string path = Directory.GetCurrentDirectory();
+            string fileName = Path.Combine(path, "StaffPhotos/" + id + ".jpg");
+            string photoString, photoType;
+            ImageFormat imageFormat;
+            
+            //Logo settings
+            string logoFileName = Path.Combine(path, "StaffPhotos/" + "logo" + ".png");
+            string logoString, logoPhotoType;
+            ImageFormat logoImageFormat;
+            Image logo = Image.FromFile(logoFileName);
+            logoImageFormat = logo.RawFormat;
+            logo = ImageHelper.Resize(logo, new Size(100, 100), out logoPhotoType);
+            logoString = ImageHelper.ImageToString(logo, logoImageFormat);
+
+            CardOut cardOut = new CardOut();
+            cardOut.Logo = logoString;
+            cardOut.LogoPhotoType = logoPhotoType;
+
+            if (System.IO.File.Exists(fileName))
+            {
+                Image image = Image.FromFile(fileName);
+                imageFormat = image.RawFormat;
+                image = ImageHelper.Resize(image, new Size(100, 100), out photoType);
+                photoString = ImageHelper.ImageToString(image, imageFormat);
+
+                cardOut.Title = staff.Title;
+                cardOut.FirstName = staff.FirstName;
+                cardOut.LastName = staff.LastName;
+                cardOut.Uid = staff.Id;
+                cardOut.Email = staff.Email;
+                cardOut.Categories = staff.Research;
+                cardOut.Photo = photoString;
+                cardOut.PhotoType = photoType;
+                cardOut.Categories = Helper.ResearchFilter.Filter(staff.Research);
+                cardOut.Tel = staff.Tel;
+                cardOut.Url = staff.Url;
+                cardOut.Org = "Southern Hemisphere Institue of Technology";
+            }
+
+            Response.Headers.Add("Content-Type", "text/vcard");
+
+            return Ok(cardOut);
+        }
+
+        //Endpoint 6
+        [HttpGet("GetItems")]
+        [HttpGet("GetItems/{name}")]
+        public ActionResult<IEnumerable<ProductOutDto>> GetItems(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+            {
+                IEnumerable<Product> Products = _repository.GetAllProducts();
+                IEnumerable<ProductOutDto> c = Products.Select(e => new ProductOutDto { Id = e.Id, Name = e.Name, Description = e.Description, Price = e.Price });
+                return Ok(c);
+            }
+            else {
+                IEnumerable<Product> Products = _repository.GetProductByString(name);
+                IEnumerable<ProductOutDto> c = Products.Select(e => new ProductOutDto { Id = e.Id, Name = e.Name, Description = e.Description, Price = e.Price });
+                return Ok(c);
+            }
 
         }
+
+        //Endpoint 7
+        [HttpGet("GetItemPhoto/{id}")]
+        public ActionResult GetItemPhoto(string id)
+        {
+            string path = Directory.GetCurrentDirectory();
+            string imgDir = Path.Combine(path, "ItemsImages");
+
+            string productPhoto = Path.Combine(imgDir, id + ".jpg");
+            string productPhoto2 = Path.Combine(imgDir, id + ".png");
+            string notFound = Path.Combine(imgDir, "default" + ".png");
+            string respHeader = "";
+            string fileName = "";
+            if (System.IO.File.Exists(productPhoto))
+            {
+                respHeader = "image/jpg";
+                fileName = productPhoto;
+            }
+            else if (System.IO.File.Exists(productPhoto2)) {
+                respHeader = "image/png";
+                fileName = productPhoto2;
+            }
+            else
+            {
+                respHeader = "image/png";
+                fileName = notFound;
+            }
+            return PhysicalFile(fileName, respHeader);
+        }
+
     }
 }

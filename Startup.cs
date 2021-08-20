@@ -13,6 +13,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using A1.Data;
 using Microsoft.EntityFrameworkCore;
+using A1.Helper;
 
 namespace A1
 {
@@ -31,6 +32,7 @@ namespace A1
             services.AddDbContext<WebAPIDBContext>(options => options.UseSqlite(Configuration.GetConnectionString("WebAPIConnection")));
             services.AddControllers();
             services.AddScoped<IWebAPIRepo, DBWebAPIRepo>();
+            services.AddMvc(options => options.OutputFormatters.Add(new VCardOutputFormatter()));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "A1", Version = "v1" });

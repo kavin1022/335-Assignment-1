@@ -46,6 +46,19 @@ namespace A1.Data
             return Staff;
         }
 
+        public IEnumerable<Product> GetAllProducts()
+        {
+            IEnumerable<Product> Products = _dbContext.Product.ToList<Product>();
+            return Products;
+        }
+
+        public IEnumerable<Product> GetProductByString(string letter)
+        {
+            IEnumerable<Product> Products = _dbContext.Product.ToList<Product>();
+            IEnumerable<Product> Product = Products.Where(e => e.Name.ToLower().Contains(letter));
+            return Product;
+        }
+
 
         public void SaveChanges()
         {
