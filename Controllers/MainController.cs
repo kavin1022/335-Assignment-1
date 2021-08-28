@@ -41,15 +41,10 @@ namespace A1.Controllers
 
         //Endpoint 2
         [HttpGet("GetVersion")]
-        public ActionResult GetVersion(){
-            string version = "<p>v1</p>";
-            ContentResult c = new ContentResult
-            {
-                Content = version,
-                ContentType = "text/html",
-                StatusCode = (int)HttpStatusCode.OK,
-            };
-            return c;
+        public ActionResult<String> GetVersion()
+        {
+            string version = "v1";
+            return version;
         }
 
         //Endpoint 3
@@ -74,7 +69,7 @@ namespace A1.Controllers
             string fileName = "";
             if (System.IO.File.Exists(staffPhoto))
             {
-                respHeader = "image/jpg";
+                respHeader = "image/jpeg";
                 fileName = staffPhoto;
             }
             else {
